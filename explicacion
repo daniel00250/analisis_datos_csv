@@ -1,0 +1,13 @@
+def cargar_datos_csv(archivo_csv):: Define una función llamada cargar_datos_csv que toma un argumento archivo_csv, que debería ser una cadena que representa la ruta del archivo CSV que deseas cargar.
+
+datos = []: Crea una lista vacía llamada datos que se utilizará para almacenar los datos del archivo CSV.
+
+with open(archivo_csv, 'r', newline='') as file:: Abre el archivo CSV especificado en modo de lectura ('r') utilizando un contexto with. Esto garantiza que el archivo se cierre automáticamente una vez que se termine de usar.
+
+lector_csv = csv.DictReader(file, delimiter=';'): Crea un lector CSV (csv.DictReader) para el archivo. El parámetro delimiter=';' especifica que el separador en el archivo CSV es el punto y coma ;. Esto es importante porque algunos archivos CSV utilizan delimitadores diferentes, como comas , o tabulaciones.
+
+for fila in lector_csv:: Itera a través de cada fila en el archivo CSV. Cada fila se convierte en un diccionario donde las claves son los encabezados de las columnas y los valores son los datos en esa fila.
+
+datos.append(fila): Agrega cada fila (representada como un diccionario) a la lista datos. De esta manera, estás construyendo una lista de diccionarios, donde cada diccionario representa una fila de datos en el archivo CSV.
+
+return datos: Devuelve la lista de datos una vez que se han cargado. Esto permitirá que otros partes del programa utilicen los datos cargados para realizar análisis adicionales o consultas.
