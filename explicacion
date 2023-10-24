@@ -1,13 +1,54 @@
+def cargar_datos_csv(archivo_csv):
+    datos = []  # Creamos una lista vacía para almacenar los datos del archivo CSV
+    with open(archivo_csv, 'r', newline='') as file:
+        lector_csv = csv.DictReader(file, delimiter=';')  # Creamos un lector CSV con ';' como separador
+        for fila in lector_csv:
+            datos.append(fila)  # Agregamos cada fila del archivo CSV a la lista de datos
+    return datos  # Devolvemos la lista de datos una vez que se han cargado
+
 def cargar_datos_csv(archivo_csv):: Define una función llamada cargar_datos_csv que toma un argumento archivo_csv, que debería ser una cadena que representa la ruta del archivo CSV que deseas cargar.
-
 datos = []: Crea una lista vacía llamada datos que se utilizará para almacenar los datos del archivo CSV.
-
 with open(archivo_csv, 'r', newline='') as file:: Abre el archivo CSV especificado en modo de lectura ('r') utilizando un contexto with. Esto garantiza que el archivo se cierre automáticamente una vez que se termine de usar.
-
 lector_csv = csv.DictReader(file, delimiter=';'): Crea un lector CSV (csv.DictReader) para el archivo. El parámetro delimiter=';' especifica que el separador en el archivo CSV es el punto y coma ;. Esto es importante porque algunos archivos CSV utilizan delimitadores diferentes, como comas , o tabulaciones.
-
 for fila in lector_csv:: Itera a través de cada fila en el archivo CSV. Cada fila se convierte en un diccionario donde las claves son los encabezados de las columnas y los valores son los datos en esa fila.
-
 datos.append(fila): Agrega cada fila (representada como un diccionario) a la lista datos. De esta manera, estás construyendo una lista de diccionarios, donde cada diccionario representa una fila de datos en el archivo CSV.
-
 return datos: Devuelve la lista de datos una vez que se han cargado. Esto permitirá que otros partes del programa utilicen los datos cargados para realizar análisis adicionales o consultas.
+
+
+# Definimos una función para listar nombres únicos de la columna "CANDIDATO"
+def listar_candidatos_unicos(datos):
+    candidatos_unicos = set()
+    for fila in datos:
+        candidatos_unicos.add(fila['CANDIDATO'])
+    return list(candidatos_unicos)
+
+def listar_candidatos_unicos(datos):: Define una función llamada listar_candidatos_unicos que toma un argumento datos, que debería ser una lista de diccionarios que contiene información de elecciones, incluyendo una columna llamada 'CANDIDATO' que contiene el nombre de los candidatos.
+candidatos_unicos = set(): Crea un conjunto (set) vacío llamado candidatos_unicos para almacenar los nombres únicos de los candidatos. Usar un conjunto garantiza que solo se almacenen nombres únicos y elimina duplicados.
+for fila in datos:: Inicia un bucle for que itera a través de cada diccionario (fila) en la lista datos. Cada diccionario representa una fila de datos del archivo CSV.
+candidatos_unicos.add(fila['CANDIDATO']): En cada iteración del bucle, se accede a la columna 'CANDIDATO' de la fila actual y se agrega el nombre del candidato al conjunto candidatos_unicos. Dado que los conjuntos no permiten elementos duplicados, esto asegura que solo se almacenen nombres de candidatos únicos.
+return list(candidatos_unicos): Finalmente, se convierte el conjunto candidatos_unicos en una lista utilizando la función list() y se devuelve esa lista como resultado de la función.
+
+# Definimos una función para sumar el total de votaciones agrupado por "CORPORACION"
+def sumar_votaciones_por_corporacion(datos):
+    votos_por_corporacion = {}  # Creamos un diccionario vacío para almacenar los totales de votaciones por corporación
+
+    for fila in datos:  # Iteramos a través de cada fila de datos en la lista "datos"
+        corporacion = fila['CORPORACION']  # Obtenemos el valor de la columna 'CORPORACION' en la fila actual
+        votos = int(fila['VOTACION'])  # Obtenemos el valor de la columna 'VOTACION' en la fila actual y lo convertimos a entero
+
+        if corporacion in votos_por_corporacion:  # Verificamos si la corporación ya existe en el diccionario
+            votos_por_corporacion[corporacion] += votos  # Si existe, sumamos los votos de la fila actual a los votos existentes para esa corporación
+        else:
+            votos_por_corporacion[corporacion] = votos  # Si no existe, creamos una entrada para la corporación y asignamos los votos de la fila actual
+
+    return votos_por_corporacion  # Devolvemos el diccionario que contiene el total de votaciones por corporación
+
+
+votos_por_corporacion = {}: Se crea un diccionario vacío llamado votos_por_corporacion que se utilizará para almacenar los totales de votaciones por corporación. Cada clave en el diccionario será una corporación y el valor será el total de votaciones para esa corporación.
+Se inicia un bucle for que recorre cada fila de datos en la lista datos. Cada fila es un diccionario que contiene información sobre una elección.
+corporacion = fila['CORPORACION']: Se obtiene el valor de la columna 'CORPORACION' de la fila actual y se almacena en la variable corporacion. Esto representa la corporación a la que pertenece la votación.
+votos = int(fila['VOTACION']): Se obtiene el valor de la columna 'VOTACION' de la fila actual y se convierte a un entero utilizando int(). Esto representa la cantidad de votos obtenidos en esa elección.
+La estructura condicional if corporacion in votos_por_corporacion: se utiliza para verificar si la corporación ya existe en el diccionario votos_por_corporacion.
+Si la corporación ya existe en el diccionario, se suma la cantidad de votos de la fila actual a los votos existentes para esa corporación utilizando votos_por_corporacion[corporacion] += votos.
+Si la corporación no existe en el diccionario, se crea una entrada para esa corporación y se asignan los votos de la fila actual a esa entrada.
+Finalmente, la función devuelve el diccionario votos_por_corporacion, que contiene los totales de votaciones agrupados por corporación.
